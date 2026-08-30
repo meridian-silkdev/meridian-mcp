@@ -17,9 +17,11 @@ Copy `.env.example` or set env vars directly:
 | Var | Description | Default |
 |-----|-------------|---------|
 | `MERIDIAN_API_URL` | Meridian app base URL | `http://localhost:3000` |
-| `MERIDIAN_API_KEY` | API key / Better Auth token for REST calls | *(none — tools return placeholder hint until set)* |
+| `MERIDIAN_API_KEY` | `mrd_` API key (Better Auth) for REST calls | *(none — tools return placeholder hint until set)* |
 | `DATABASE_URL` | Optional direct DB access fallback | |
 | `MERIDIAN_MCP_LOG_LEVEL` | debug/info/warn/error | info |
+
+More: `/.well-known/agent-configuration` exposes **Agent Auth** discovery (capability-based, short-lived JWTs, device-auth/CIBA approval). Agents can use either a long-lived `mrd_` key or scoped Agent Auth grants — see `meridian-skills` `meridian-api` skill.
 
 Without `MERIDIAN_API_KEY` every tool still responds — it explains what endpoint would be called and what to configure, so the server is safe to run in dry-run / demo mode.
 
