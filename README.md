@@ -2,6 +2,8 @@
 
 MCP server for the **Meridian** business-services platform. Exposes services, service requests, workflow steps, payments and meetings as [Model Context Protocol](https://modelcontextprotocol.io) tools and resources. MCP is a protocol, not a host-specific plugin format — this server runs unchanged in **Claude Code, Codex CLI, Claude Desktop, pi**, or any other MCP-compatible client.
 
+Listed on the [official MCP Registry](https://registry.modelcontextprotocol.io) as `io.github.meridian-silkdev/meridian-mcp`.
+
 ## Install
 
 ```bash
@@ -151,12 +153,18 @@ npm publish --access public
 ## CI/CD
 
 - **`.github/workflows/ci.yml`** — every push to `main` and every PR: `npm ci`, typecheck, build, `npm test` (the real stdio smoke suite).
-- **`.github/workflows/publish.yml`** — fires on a **published GitHub Release**, re-runs the full test suite, checks the release tag matches `package.json`'s version, then `npm publish --provenance`. Uses npm's **Trusted Publishing (OIDC)** — no `NPM_TOKEN` secret to create or rotate.
+- **`.github/workflows/publish.yml`** — fires on a **published GitHub Release**, re-runs the full test suite, checks the release tag matches `package.json`'s version, then:
+  1. `npm publish --provenance` via npm's **Trusted Publishing (OIDC)** — no `NPM_TOKEN` secret to create or rotate.
+  2. Publishes/updates the listing on the **official MCP Registry** via `mcp-publisher login github-oidc` + `mcp-publisher publish` (also OIDC, no secret). `server.json`'s version is synced to the release tag automatically. This step has `continue-on-error: true` — the registry is explicitly in preview, so a hiccup there never blocks the actual npm release.
+
+**mcpName requirement:** `package.json` has an `"mcpName": "io.github.meridian-silkdev/meridian-mcp"` field — the registry's package validator needs this to confirm the npm package and the GitHub-verified server identity are published by the same owner. If you ever rename the server in `server.json`, update this field too or publishes will 400.
+
+**Known upstream bug, worked around:** the *interactive* `mcp-publisher login github` device flow reliably 403s when publishing under a GitHub **organization** namespace (confirmed-public membership, Owner role, doesn't matter — see [modelcontextprotocol/registry#1537](https://github.com/modelcontextprotocol/registry/issues/1537), still open as of this writing). `github-oidc` from inside a GitHub Actions workflow running in the org's own repo sidesteps it entirely, since it verifies the workflow's repo identity rather than checking the human account's org list. That's why the registry publish step lives in CI, not as a manual local command.
 
 **One-time setup after the first manual publish:** on the package's npmjs.com page → Settings → Trusted Publisher → GitHub Actions, and point it at `meridian-silkdev/meridian-mcp`, workflow `publish.yml`. After that, releasing a new version is just:
 
 ```bash
 npm version patch   # or minor/major — bumps package.json + creates a git tag
 git push --follow-tags
-gh release create v0.1.1 --generate-notes   # publishing this release triggers the workflow
+gh release create v0.1.3 --generate-notes   # publishing this release triggers both the npm and MCP Registry publish steps
 ```
