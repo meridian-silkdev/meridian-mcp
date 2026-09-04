@@ -6,7 +6,7 @@ on:
 
 permissions:
   contents: read
-  id-token: write   # required for npm Trusted Publishing (OIDC) — no NPM_TOKEN secret needed
+  id-token: write   # required for npm Trusted Publishing AND MCP Registry GitHub-OIDC auth — no secrets needed for either
 
 jobs:
   publish:
@@ -33,3 +33,17 @@ jobs:
       - name: Ensure npm supports Trusted Publishing
         run: npm install -g npm@latest
       - run: npm publish --access public --provenance
+
+      - name: Install mcp-publisher
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+      - name: Sync server.json version to release tag
+        run: |
+          VERSION="${{ github.event.release.tag_name }}"
+          VERSION="${VERSION#v}"
+          jq --arg v "$VERSION" '.version = $v | .packages[0].version = $v' server.json > server.tmp && mv server.tmp server.json
+      - name: Authenticate to MCP Registry (GitHub OIDC — bypasses the org-membership 403 bug tracked in modelcontextprotocol/registry#1537, since it verifies the workflow's repo identity, not the human's org list)
+        run: ./mcp-publisher login github-oidc
+      - name: Publish server to MCP Registry
+        run: ./mcp-publisher publish
+        continue-on-error: true   # remove once modelcontextprotocol/registry#1537 is confirmed fixed or this OIDC path is confirmed to work

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.meridian-silkdev/meridian-mcp",
+  "description": "MCP server for Meridian: services, requests, workflow, payments, meetings for founders.",
+  "repository": {
+    "url": "https://github.com/meridian-silkdev/meridian-mcp",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@meridiantoolkit/mcp",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "description": "Meridian app base URL (defaults to http://localhost:3000)",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false,
+          "name": "MERIDIAN_API_URL"
+        },
+        {
+          "description": "mrd_ API key for authenticated REST calls. Without it, every tool still responds in dry-run mode with a placeholder hint.",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": true,
+          "name": "MERIDIAN_API_KEY"
+        },
+        {
+          "description": "Log level: debug, info, warn, or error (default info)",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false,
+          "name": "MERIDIAN_MCP_LOG_LEVEL"
+        }
+      ]
+    }
+  ]
+}
