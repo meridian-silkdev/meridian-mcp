@@ -4,6 +4,20 @@
   "description": "MCP server for the Meridian business-services platform — expose services, requests, workflow, payments and meetings as MCP tools. Works with Claude Code, Codex CLI, Claude Desktop, pi, and any MCP-compatible client.",
   "type": "module",
   "license": "MIT",
+  "keywords": [
+    "mcp-server",
+    "mcp",
+    "model-context-protocol",
+    "startups",
+    "founder-toolkit",
+    "startup-services",
+    "startup-tools",
+    "company-incorporation",
+    "business-formation",
+    "legal-services",
+    "visa",
+    "agentic-commerce"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/meridian-silkdev/meridian-mcp.git"
