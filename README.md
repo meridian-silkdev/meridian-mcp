@@ -1,8 +1,10 @@
 # @meridiantoolkit/mcp
 
+[![meridian-mcp MCP server](https://glama.ai/mcp/servers/meridian-silkdev/meridian-mcp/badges/score.svg)](https://glama.ai/mcp/servers/meridian-silkdev/meridian-mcp)
+
 MCP server for the **Meridian** business-services platform. Exposes services, service requests, workflow steps, payments and meetings as [Model Context Protocol](https://modelcontextprotocol.io) tools and resources. MCP is a protocol, not a host-specific plugin format — this server runs unchanged in **Claude Code, Codex CLI, Claude Desktop, pi**, or any other MCP-compatible client.
 
-Listed on the [official MCP Registry](https://registry.modelcontextprotocol.io) as `io.github.meridian-silkdev/meridian-mcp`.
+Listed on the [official MCP Registry](https://registry.modelcontextprotocol.io) as `io.github.meridian-silkdev/meridian-mcp`, and on [Glama](https://glama.ai/mcp/servers/meridian-silkdev/meridian-mcp).
 
 ## Install
 
