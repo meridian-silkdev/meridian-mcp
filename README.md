@@ -141,7 +141,22 @@ npm test          # spawns the built server over stdio and exercises every tool/
 
 ## Publish
 
+First publish (manual, one-time — a scoped package can't use Trusted Publishing until it exists on the registry):
+
 ```bash
 npm login                     # once per machine
-npm publish --access public   # required for the first publish of a scoped package
+npm publish --access public
+```
+
+## CI/CD
+
+- **`.github/workflows/ci.yml`** — every push to `main` and every PR: `npm ci`, typecheck, build, `npm test` (the real stdio smoke suite).
+- **`.github/workflows/publish.yml`** — fires on a **published GitHub Release**, re-runs the full test suite, checks the release tag matches `package.json`'s version, then `npm publish --provenance`. Uses npm's **Trusted Publishing (OIDC)** — no `NPM_TOKEN` secret to create or rotate.
+
+**One-time setup after the first manual publish:** on the package's npmjs.com page → Settings → Trusted Publisher → GitHub Actions, and point it at `meridian-silkdev/meridian-mcp`, workflow `publish.yml`. After that, releasing a new version is just:
+
+```bash
+npm version patch   # or minor/major — bumps package.json + creates a git tag
+git push --follow-tags
+gh release create v0.1.1 --generate-notes   # publishing this release triggers the workflow
 ```
