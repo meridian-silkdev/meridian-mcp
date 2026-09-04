@@ -1,4 +1,4 @@
-# @meridian/mcp
+# @meridiantoolkit/mcp
 
 MCP server for the **Meridian** business-services platform. Exposes services, service requests, workflow steps, payments and meetings as [Model Context Protocol](https://modelcontextprotocol.io) tools and resources. MCP is a protocol, not a host-specific plugin format — this server runs unchanged in **Claude Code, Codex CLI, Claude Desktop, pi**, or any other MCP-compatible client.
 
@@ -13,7 +13,7 @@ npm run build
 Or once published:
 
 ```bash
-npx @meridian/mcp
+npx @meridiantoolkit/mcp
 ```
 
 ## Configure
@@ -43,7 +43,7 @@ npm run dev          # watch mode via tsx
 ```bash
 claude mcp add meridian -- node /absolute/path/to/meridian-mcp/dist/index.js
 # or, once published:
-claude mcp add meridian -- npx -y @meridian/mcp
+claude mcp add meridian -- npx -y @meridiantoolkit/mcp
 ```
 
 Or drop a `.mcp.json` in your project root (shareable with a team, checked into git):
@@ -53,7 +53,7 @@ Or drop a `.mcp.json` in your project root (shareable with a team, checked into 
   "mcpServers": {
     "meridian": {
       "command": "npx",
-      "args": ["-y", "@meridian/mcp"],
+      "args": ["-y", "@meridiantoolkit/mcp"],
       "env": {
         "MERIDIAN_API_URL": "http://localhost:3000",
         "MERIDIAN_API_KEY": "..."
@@ -70,11 +70,11 @@ Codex reads MCP servers from `~/.codex/config.toml` (or a project-scoped `.codex
 ```toml
 [mcp_servers.meridian]
 command = "npx"
-args = ["-y", "@meridian/mcp"]
+args = ["-y", "@meridiantoolkit/mcp"]
 env = { MERIDIAN_API_URL = "http://localhost:3000", MERIDIAN_API_KEY = "..." }
 ```
 
-Or via the CLI: `codex mcp add meridian -- npx -y @meridian/mcp`. The same config is shared by Codex CLI, the IDE extension, and the ChatGPT desktop app.
+Or via the CLI: `codex mcp add meridian -- npx -y @meridiantoolkit/mcp`. The same config is shared by Codex CLI, the IDE extension, and the ChatGPT desktop app.
 
 Codex has no plugin/skill system (unlike Claude Code and pi) — its equivalent of `meridian-plugin`/`meridian-skills` is just this MCP server plus project guidance. Copy [`AGENTS.md.example`](./AGENTS.md.example) into your project's `AGENTS.md` for the same tool-usage guidance the skills packages give elsewhere.
 
@@ -100,7 +100,7 @@ Add to your MCP config (Claude Desktop: `claude_desktop_config.json`; pi: `.pi/s
 ```bash
 pi --mcp meridian-mcp/dist/index.js
 # or via npx after publish
-npx @meridian/mcp
+npx @meridiantoolkit/mcp
 ```
 
 ## Tools
