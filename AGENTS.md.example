@@ -1,0 +1,9 @@
+## Meridian
+
+This project uses the `meridian` MCP server (`@meridian/mcp`) for the Meridian business-services platform. Copy the relevant parts of this section into your own `AGENTS.md`.
+
+- Configure once via `codex mcp add meridian -- npx -y @meridian/mcp` (or a `[mcp_servers.meridian]` block in `~/.codex/config.toml` / `.codex/config.toml`), with `MERIDIAN_API_URL` and `MERIDIAN_API_KEY` (an `mrd_...` key from Meridian → Settings → API Keys) in its `env`.
+- Call `meridian_status` first in a new session to confirm connectivity before doing anything else — it takes no params and always responds, even without a key configured (dry-run mode).
+- Prefer the MCP tools over hand-written HTTP calls: `list_services` / `get_service` / `list_categories` to find a service, `create_service_request` / `get_service_request` / `list_service_requests` to create and track one, `get_workflow_status` / `advance_step` / `list_request_steps` for the workflow state machine, `get_payment_status` / `verify_payment` for payments (Flouci for Tunisia, Stripe international — a redirect back to the portal is never proof of payment, always verify server-side), `list_meetings` / `create_meeting` / `respond_to_meeting` for scheduling.
+- Without `MERIDIAN_API_KEY` set, every tool still responds — it explains what endpoint it would call and what to configure, so it's safe to explore in dry-run mode first.
+- Treat `verify_payment`, `create_service_request`, and `update_request_status` as live-effect calls once a real API key is configured — confirm with the user before calling them, the same way `meridian-plugin`'s Claude Code hook and pi's `meridian-guard` extension do.

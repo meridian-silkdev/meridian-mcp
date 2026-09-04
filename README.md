@@ -1,6 +1,6 @@
-# meridian-mcp
+# @meridian/mcp
 
-MCP server for the **Meridian** business-services platform. Exposes services, service requests, workflow steps, payments and meetings as [Model Context Protocol](https://modelcontextprotocol.io) tools and resources.
+MCP server for the **Meridian** business-services platform. Exposes services, service requests, workflow steps, payments and meetings as [Model Context Protocol](https://modelcontextprotocol.io) tools and resources. MCP is a protocol, not a host-specific plugin format — this server runs unchanged in **Claude Code, Codex CLI, Claude Desktop, pi**, or any other MCP-compatible client.
 
 ## Install
 
@@ -8,6 +8,12 @@ MCP server for the **Meridian** business-services platform. Exposes services, se
 cd meridian-mcp
 npm install
 npm run build
+```
+
+Or once published:
+
+```bash
+npx @meridian/mcp
 ```
 
 ## Configure
@@ -28,13 +34,53 @@ Without `MERIDIAN_API_KEY` every tool still responds — it explains what endpoi
 ## Run
 
 ```bash
-npm start            # stdio MCP server (for Claude Desktop / pi)
+npm start            # stdio MCP server
 npm run dev          # watch mode via tsx
 ```
 
+### Claude Code
+
+```bash
+claude mcp add meridian -- node /absolute/path/to/meridian-mcp/dist/index.js
+# or, once published:
+claude mcp add meridian -- npx -y @meridian/mcp
+```
+
+Or drop a `.mcp.json` in your project root (shareable with a team, checked into git):
+
+```json
+{
+  "mcpServers": {
+    "meridian": {
+      "command": "npx",
+      "args": ["-y", "@meridian/mcp"],
+      "env": {
+        "MERIDIAN_API_URL": "http://localhost:3000",
+        "MERIDIAN_API_KEY": "..."
+      }
+    }
+  }
+}
+```
+
+### Codex CLI
+
+Codex reads MCP servers from `~/.codex/config.toml` (or a project-scoped `.codex/config.toml` for a trusted project):
+
+```toml
+[mcp_servers.meridian]
+command = "npx"
+args = ["-y", "@meridian/mcp"]
+env = { MERIDIAN_API_URL = "http://localhost:3000", MERIDIAN_API_KEY = "..." }
+```
+
+Or via the CLI: `codex mcp add meridian -- npx -y @meridian/mcp`. The same config is shared by Codex CLI, the IDE extension, and the ChatGPT desktop app.
+
+Codex has no plugin/skill system (unlike Claude Code and pi) — its equivalent of `meridian-plugin`/`meridian-skills` is just this MCP server plus project guidance. Copy [`AGENTS.md.example`](./AGENTS.md.example) into your project's `AGENTS.md` for the same tool-usage guidance the skills packages give elsewhere.
+
 ### Claude Desktop / pi
 
-Add to your MCP config:
+Add to your MCP config (Claude Desktop: `claude_desktop_config.json`; pi: `.pi/settings.json` → `mcpServers`, or `pi --mcp`):
 
 ```json
 {
@@ -51,18 +97,17 @@ Add to your MCP config:
 }
 ```
 
-Or with pi:
-
 ```bash
 pi --mcp meridian-mcp/dist/index.js
 # or via npx after publish
-npx meridian-mcp
+npx @meridian/mcp
 ```
 
 ## Tools
 
 | Tool | Description |
 |------|-------------|
+| `meridian_status` | Check API connectivity/config and list available tools/resources. No params. Works the same in every client — this replaces the pi-only `meridian_status` extension tool from `meridian-plugin` so status-checking isn't tied to one host. |
 | `list_services` | List services (filter: categorySlug, isActive, countryCode) |
 | `get_service` | Get service by id/slug with formConfig |
 | `list_categories` | List service categories |
@@ -91,4 +136,12 @@ npx meridian-mcp
 ```bash
 npm run typecheck
 npm run build
+npm test          # spawns the built server over stdio and exercises every tool/resource
+```
+
+## Publish
+
+```bash
+npm login                     # once per machine
+npm publish --access public   # required for the first publish of a scoped package
 ```
